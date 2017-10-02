@@ -21,8 +21,7 @@ class Client
     /**
      * @var string
      */
-    private $baseUrl = 'https://api.emarsys.net/api/v2/';
-
+    private $baseUrl = 'https://suite11.emarsys.net/api/v2/';
     /**
      * @var string
      */
@@ -81,6 +80,11 @@ class Client
 
         if (empty($this->choicesMapping)) {
             $this->choicesMapping = $this->parseIniFile('choices.ini');
+
+            $this->choicesMapping['Opt-In'] = [
+                "True"=>1,
+                "False"=>2
+            ];
         }
     }
 
@@ -224,6 +228,27 @@ class Client
         return $this->send(HttpClient::GET, 'condition');
     }
 
+    public function getSettings()
+    {
+        return $this->send(HttpClient::POST, 'settings');
+    }
+
+    public function getContacts($fields=null)
+    {
+        if($fields !== null)
+        {
+            $request = array_merge([
+                'return'=>3,
+            ], $fields);
+        }
+        else
+        {
+            $request = ['return'=>3];
+        }
+            
+        return $this->send(HttpClient::GET, 'contact/query', $request);
+    }
+
     /**
      * Creates one or more new contacts/recipients.
      * Example :
@@ -260,7 +285,7 @@ class Client
      * database, it is created.
      *
      * @param array $data
-     * @return Response
+     * @return Responses
      */
     public function updateContactAndCreateIfNotExists(array $data)
     {
@@ -277,6 +302,11 @@ class Client
      */
     public function deleteContact(array $data)
     {
+        $data = [
+            'key_id'=>'id',
+            'id'=>$emarsys_id
+        ];
+
         return $this->send(HttpClient::POST, 'contact/delete', $data);
     }
 

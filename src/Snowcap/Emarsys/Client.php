@@ -300,7 +300,7 @@ class Client
      * @param array $data
      * @return Response
      */
-    public function deleteContact(array $data)
+    public function deleteContact(int $emarsys_id)
     {
         $data = [
             'key_id'=>'id',
@@ -898,6 +898,10 @@ class Client
             } else {
                 $mappedData[$this->getFieldId($name)] = $value;
             }
+        }
+
+        if(isset($mappedData['id'])) {
+            $mappedData['key_id'] = "id";
         }
 
         return $mappedData;

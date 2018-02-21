@@ -233,17 +233,17 @@ class Client
         return $this->send(HttpClient::POST, 'settings');
     }
 
-    public function getContacts($fields=null)
+    public function getContacts($fields=null, $return_field=3)
     {
         if($fields !== null)
         {
             $request = array_merge([
-                'return'=>3,
+                'return'=>$return_field,
             ], $fields);
         }
         else
         {
-            $request = ['return'=>3];
+            $request = ['return'=>$return_field];
         }
             
         return $this->send(HttpClient::GET, 'contact/query', $request);
